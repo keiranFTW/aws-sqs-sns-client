@@ -13,6 +13,14 @@ module.exports = function (aws, app,ui) {
 
     // create the sqs service object
     var sqs = new aws.SQS()
+
+    var fixQueueUrl = (queueUrl) => queueUrl.replace('eu-central-1.localhost', 'localhost');
+
+    var fixQueueUrls = (queueUrls) => {
+        if (queueUrls && queueUrls.length) {
+            queueUrls.forEach((queueUrl, index) => queueUrls[index] = fixQueueUrl(queueUrl));
+        }
+    };
     
    
     // 1. create Queue 
@@ -29,6 +37,8 @@ module.exports = function (aws, app,ui) {
                 res.status(500)
                 ui.data[ui.menuitem] = '(500) Queue Creation Error:\n\n' + JSON.stringify(err, null, 3)
             } else {
+
+                data.QueueUrl = fixQueueUrl(data.QueueUrl);
                 res.status(201)
                 ui.data[ui.menuitem] ='(201) Success:\n\n' + JSON.stringify(data, null, 3)
 
@@ -52,7 +62,9 @@ module.exports = function (aws, app,ui) {
                 res.status(500)
                 ui.data[ui.menuitem] = '(500) List Queue Error:\n\n' + JSON.stringify(err, null, 3)
             } else {
-                if (data.QueueUrls) {        
+
+                if (data.QueueUrls) {     
+                    fixQueueUrls(data.QueueUrls);   
                     res.status(200)
                     ui.data[ui.menuitem] ='(200) Success:\n\n' + JSON.stringify(data, null, 3)
                 } else { // no queues
@@ -81,6 +93,8 @@ module.exports = function (aws, app,ui) {
                 res.status(500)
                 ui.data[ui.menuitem] = '(500) Get Queue URL Error:\n\n' + JSON.stringify(err, null, 3)
             } else {
+
+                data.QueueUrl = fixQueueUrl(data.QueueUrl);
                 res.status(200)
                 ui.data[ui.menuitem] ='(200) Success:\n\n' + JSON.stringify(data, null, 3)
 
