@@ -1,4 +1,0 @@
-{ 
-    "sqs_endpoint": "http://localhost:4100",
-    "sns_endpoint": "http://localhost:4100"
-}
