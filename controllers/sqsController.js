@@ -14,7 +14,7 @@ module.exports = function (aws, app,ui) {
     // create the sqs service object
     var sqs = new aws.SQS()
 
-    var fixQueueUrl = (queueUrl) => queueUrl.replace('eu-central-1.localhost', 'localhost');
+    var fixQueueUrl = (queueUrl) => queueUrl.replace(/http:\/\/.*:\d+/, aws.config.sqs);
 
     var fixQueueUrls = (queueUrls) => {
         if (queueUrls && queueUrls.length) {
